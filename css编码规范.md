@@ -23,7 +23,7 @@
 ## 基本规范
 
 #### 页面编码
-为了兼容低版本IE浏览器，CSS文件第一行需要声明文件编码。
+如需兼容低版本IE浏览器，CSS文件第一行需要声明文件编码。
 ```css
 @charset "utf-8";
 ```
@@ -56,6 +56,15 @@ id 和 class 的命名长度应该适中，不要太简略也不要太详细。
 /* 推荐 */
 .nav {}
 .author {}
+```
+多层级嵌套的 class 命名可采用驼峰式或连接符的方式，但要确保命名风格统一
+```css
+/* 推荐 */
+.public-left{}
+```
+```css
+/* 推荐 */
+.publicLeft{}
 ```
 #### 元素选择器
 由于[性能原因](http://www.stevesouders.com/blog/2009/06/18/simplifying-css-selectors/)， 避免元素选择器和类选择器以及 id 选择器混用。
@@ -159,9 +168,10 @@ color: #abc;
 .content { font-weight: 700; }
 ```
 #### 关于import
-避免在CSS文件中使用`@import`指令，`@import`指令会增加额外的请求次数，还会导致不可预料的问题，
+避免在CSS文件中使用`@import`指令(除了预处理器)，`@import`指令会增加额外的请求次数，还会导致不可预料的问题，
 与`<link>`标签相比，`@import` 指令要慢很多。
 ### CSS-Reset
+为了保证各浏览器的初始默认样式统一，需要在各项目中引入初始化css文件，
 ```css
 @charset "utf-8";
 body, h1, h2 , h3, h4, h5, h6, dl, dt, dd, ul, li, th, td, p, button, input, select, textarea { margin: 0; padding: 0; }
