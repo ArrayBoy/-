@@ -1,6 +1,6 @@
 ﻿
 # JavaScript编码规范
-
+[页面规范](#页面规范)
 [基本规范](#基本规范)
 * [变量](#变量)
 * [常量](#常量)
@@ -18,6 +18,11 @@
   * [通用命名](#通用命名)
 
 [参考文档](#参考文档)
+## 页面规范
+
+ 1. 所有的JS文件都要放在页面底部加载（除了特殊JS文件）
+ 2.  推荐一个页面或者模块对应一个JS文件
+ 3. 所有全局的函数可以封装在一个JS文件
 
 ## 基本规范
 
@@ -59,8 +64,9 @@ if (x) {
 ```
 ```javascript
 //推荐
+var foo = function () {};
 if (x) {
-  function foo() {}
+  foo();
 }
 ```
 #### 封装基本类型
@@ -105,17 +111,6 @@ printArray(a);  // This is wrong again.
 a = new Array;
 a[3] = 3;
 printArray(a);  // This is wrong again.
-```
-#### with
-在编译时，不能忽略行起始位置的空白字符； "\" 后的空白字符会产生奇怪的错误; 虽然大多数脚本引擎支持这种写法，但它不是 ECMAScript 的标准规范。
-```javascript
-//不推荐
-var myString = 'A rather long string of English text, an error message \
-                actually that just keeps going and going -- an error \
-                message to make the Energizer bunny blush (right through \
-                those Schwarzenegger shades)! Where was I? Oh yes, \
-                you\'ve got an error and all the extraneous whitespace is \
-                just gravy.  Have a nice day.';
 ```
 #### Array和Object直接量
 使用 Array 和 Object 语法，而不使用 Array 和 Object 构造器。
@@ -165,7 +160,88 @@ var o2 = {
 
 ### 命名
 #### 通用命名
+命名规程采用驼峰式的语义化命名方式，如下所示:
 `functionNamesLikeThis`, `variableNamesLikeThis`,`ClassNamesLikeThis`, `EnumNamesLikeThis`, `methodNamesLikeThis`, 和 `SYMBOLIC_CONSTANTS_LIKE_THIS`；
 
 ## 参考文档
 [https://google.github.io/styleguide/javascriptguide.xml](https://google.github.io/styleguide/javascriptguide.xml)
+
+补充：
+##JQ编码规范
+####需要DOM加载完执行的代码一律放到ready函数里面且页面只写一个文档ready事件的处理程序
+
+```
+//推荐
+$(function(){ //do something })
+```
+####关于变量
+
+ 1. jQuery类型的变量最好加个$前缀。
+ 2. 时常将jQuery选择器返回的内容存进变量以便重用
+
+```
+var $myShare = $("#myShare");
+$myShare.click(function(){...});
+```
+####关于选择器
+
+ 1. 尽量ID选择器。实际运用的是js的document.getElementById()，所以速度较其他选择器快。
+ 2. 使用类选择器时表指定元素的类型。
+ 3. ID父亲容器下面查找子元素请用.find()方法。这样做快的原因是通过id选择元素不会使用Sizzle引擎。
+
+```
+var $products = $("div.products"); // 慢
+var $products = $(".products"); // 快
+var $productIds = $("#products div.id");//不推荐
+var $productIds = $("#products").find("div.id");//推荐
+
+```
+####DOM操作
+
+ 1. 使用连接字符串或数组join()，然后再append()。
+ 2. 不要用缺失的元素
+ 3. 不要将CSS与jQuery杂揉
+```
+// 不推荐
+var $myList = $("#list");
+for(var i = 0; i < 10000; i++){
+    $myList.append("<li>"+i+"</li>");
+}
+// 推荐
+var array = []; 
+for(var i = 0; i < 10000; i++){
+    array[i] = "<li>"+i+"</li>"; 
+}
+$myList.html(array.join(''));
+
+
+//不推荐
+$("#nosuchthing").slideUp();
+
+//推荐
+var $mySelection = $("#nosuchthing");
+if ($mySelection.length) {
+    $mySelection.slideUp();
+}
+
+
+//不推荐
+$("#mydiv").css({'color':red, 'font-weight':'bold'}); 
+//推荐
+.error {
+    color: red;
+    font-weight: bold;
+}
+$("#mydiv").addClass("error"); 
+```
+###尽量采用链式写法
+
+```
+//不推荐
+var $item = $("#item");
+$item.addClass("error");
+$item.show();
+
+//推荐
+$item.addClass("error").show();
+```
